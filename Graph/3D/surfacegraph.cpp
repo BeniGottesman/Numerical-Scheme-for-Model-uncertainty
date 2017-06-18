@@ -51,7 +51,6 @@ void SurfaceGraph::computeGraph ()
     QSurfaceDataArray *dataArray = new QSurfaceDataArray;
 
     double y0 = 0;
-    double maxYValue = 0;
 
     double x0 = graph->getInfX();
     double x0_inf = graph->getInfX();
@@ -77,9 +76,9 @@ void SurfaceGraph::computeGraph ()
         {
             y0 = this->s->execute(*graph->getCommunicator()->getT1());//V00
             (*newRow)[index++].setPosition(QVector3D(x0, y0, z0));
-            if (y0 > maxYValue)
-                maxYValue = y0;
-            std::cout << "T = " << z0 << ", S0 = " << x0 << ", V00 = " << y0 <<"\n";
+            /*if (y0 > maxYValue)
+                maxYValue = y0;*/
+            //std::cout << "T = " << z0 << ", S0 = " << x0 << ", V00 = " << y0 <<"\n";
             graph->updateValue("x", j);
             x0 = x0_inf + j*graph->getStepX();
             if (graph->getStepX() == 0)//X is reduced to a singleton
@@ -95,7 +94,7 @@ void SurfaceGraph::computeGraph ()
         if (graph->getStepZ() == 0)//Z is reduced to a singleton
             break;
     }
-    //graph->getGraph()->axisY()->setRange(0.0f, maxYValue + 2.0f);
+
     surfaceProxy->resetArray(dataArray);
 
     graph->updateValue("z", 0);//we reset the z parameter

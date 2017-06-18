@@ -22,7 +22,7 @@ SOURCES += main.cpp\
     #Pattern/Com/communicator.cpp \
     #Graph/graph.cpp \
     Graph/3D/graph3d.cpp \
-    Graph/3D/surfacegraph.cpp \
+    #Graph/3D/surfacegraph.cpp \
     Graph/2D/graph2d.cpp \
     qcustomplot/qcustomplot.cpp \
     Windows/srwindow.cpp \
@@ -32,13 +32,13 @@ HEADERS  += Windows/mainwindow.h \
     Windows/drawwindow.h \
     Algorithm/strategy.h \
     Algorithm/nsmualgorithm.h \
-    Graph/3D/surfacegraph.h \
     Algorithm/option.h \
     #Graph/division.h \
     #Parameter/simulationparameters.h \
     Parameter/parameter.h \
     Pattern/Com/communicator.h \
-    Graph/3D/graph.h \
+    Graph/graph.h \
+    #Graph/3D/surfacegraph.h \
     Graph/3D/graph3d.h \
     Graph/2D/graph2d.h \
     qcustomplot/qcustomplot.h \

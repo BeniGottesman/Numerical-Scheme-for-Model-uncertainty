@@ -36,9 +36,9 @@ public:
 private slots:
     void on_StoppingRegionButton_clicked();
     void on_DoRecursion_clicked();
+    void DrawingNext (Graph3D * g3D);
     //void on_actionAbout_clicked ();
     void on_OptionChoice_currentIndexChanged(const QString &PayoffMenu);
-
 private:
     Ui::MainWindow *ui;
     DrawWindow * DW;

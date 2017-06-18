@@ -98,6 +98,9 @@ void MainWindow::on_StoppingRegionButton_clicked()
 
 void MainWindow::on_DoRecursion_clicked()
 {
+    this->setEnabled(false);
+    //ui->DoRecursion->setEnabled(false);
+
     /*Value from the GUI*/
     double S0_inf = ui->S0_inf->value();
     double S0_sup = ui->S0_sup->value();
@@ -199,18 +202,26 @@ void MainWindow::on_DoRecursion_clicked()
 
     parameterListDC<Q3DSurface> pLDC (pLD);
 
-    Graph3D * graph = new Graph3D ("Initial stock Value",
-                                   "Option Value",
-                                   "Maturity",
-                                   "S0", "T",
-                                   S0div, Tdiv,
-                                   S0_inf,S0_sup,
-                                   T_inf,T_sup);
+    Graph3D * g3D = new Graph3D ("Initial stock Value",
+                                 "Option Value",
+                                 "Maturity",
+                                 "S0", "T",
+                                 S0div, Tdiv,
+                                 S0_inf,S0_sup,
+                                 T_inf,T_sup);
 
     ICommunicator<ParamLD, Q3DSurface>::Connect(&pLDC, pLDC.getParameterList(),
-                                                graph, graph->getGraph());
+                                                g3D, g3D->getGraph());
 
-    DW = new DrawWindow (*(pLDC.getParameterList()), graph, abstractAlgo);
+    g3D->start ();
+}
+
+void MainWindow::DrawingNext (Graph3D * g3D)
+{
+    this->setEnabled(true);
+
+    //DW = new DrawWindow (g3D, abstractAlgo);
+
     this->hide();
 }
 

@@ -24,15 +24,15 @@ public:
 
     void computeGraph ();
 
-    void toggleModeNone() { graph->getGraph()->setSelectionMode(QAbstract3DGraph::SelectionNone); }
-    void toggleModeItem() { graph->getGraph()->setSelectionMode(QAbstract3DGraph::SelectionItem); }
+    /*void toggleModeNone() { graph->setSelectionMode(QAbstract3DGraph::SelectionNone); }
+    void toggleModeItem() { graph->setSelectionMode(QAbstract3DGraph::SelectionItem); }
     void toggleModeSliceRow()
-    { graph->getGraph()->setSelectionMode(QAbstract3DGraph::SelectionItemAndRow
+    { graph->setSelectionMode(QAbstract3DGraph::SelectionItemAndRow
                                                           | QAbstract3DGraph::SelectionSlice); }
     void toggleModeSliceColumn()
-    { graph->getGraph()->setSelectionMode(QAbstract3DGraph::SelectionItemAndColumn
+    { graph->setSelectionMode(QAbstract3DGraph::SelectionItemAndColumn
                                                              | QAbstract3DGraph::SelectionSlice); }
-
+*/
     void setAxisXRange(float min, float max);
     void setAxisZRange(float min, float max);
 

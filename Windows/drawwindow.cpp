@@ -1,7 +1,7 @@
 #include "drawwindow.h"
-#include "ui_drawwindow.h"
+//#include "ui_drawwindow.h"
 
-DrawWindow::DrawWindow(ParamLD &pLD, Graph3D *g3d,
+DrawWindow::DrawWindow(Graph3D *g3d,
                        PayoffAlgorithm * abstractAlgo,
                        QWidget *parent) :
     QDialog(parent)
@@ -129,42 +129,39 @@ DrawWindow::DrawWindow(ParamLD &pLD, Graph3D *g3d,
 
     widget->show();
 
-    this->sg = new SurfaceGraph (new Strategy (abstractAlgo),
-                                 &pLD,
-                                 g3d);
+    g3d->computeGraph(new Strategy (abstractAlgo));
 
     QObject::connect(modeNoneRB, &QRadioButton::toggled,
-                     this->sg, &SurfaceGraph::toggleModeNone);
-    QObject::connect(modeItemRB,  &QRadioButton::toggled,
-                     this->sg, &SurfaceGraph::toggleModeItem);
-    QObject::connect(modeSliceRowRB,  &QRadioButton::toggled,
-                     this->sg, &SurfaceGraph::toggleModeSliceRow);
-    QObject::connect(modeSliceColumnRB,  &QRadioButton::toggled,
-                     this->sg, &SurfaceGraph::toggleModeSliceColumn);
+                     g3d, &Graph3D::toggleModeNone);
+    QObject::connect(modeItemRB, &QRadioButton::toggled,
+                     g3d, &Graph3D::toggleModeItem);
+    QObject::connect(modeSliceRowRB, &QRadioButton::toggled,
+                     g3d, &Graph3D::toggleModeSliceRow);
+    QObject::connect(modeSliceColumnRB, &QRadioButton::toggled,
+                     g3d, &Graph3D::toggleModeSliceColumn);
     QObject::connect(axisMinSliderX, &QSlider::valueChanged,
-                     this->sg, &SurfaceGraph::adjustXMin);
+                     g3d, &Graph3D::adjustXMin);
     QObject::connect(axisMaxSliderX, &QSlider::valueChanged,
-                     this->sg, &SurfaceGraph::adjustXMax);
+                     g3d, &Graph3D::adjustXMax);
     QObject::connect(axisMinSliderZ, &QSlider::valueChanged,
-                     this->sg, &SurfaceGraph::adjustZMin);
+                     g3d, &Graph3D::adjustZMin);
     QObject::connect(axisMaxSliderZ, &QSlider::valueChanged,
-                     this->sg, &SurfaceGraph::adjustZMax);
-    QObject::connect(themeList, SIGNAL(currentIndexChanged(int)),
-                     this->sg, SLOT(changeTheme(int)));
+                     g3d, &Graph3D::adjustZMax);
+    /*QObject::connect(themeList, SIGNAL(currentIndexChanged(int)),
+                     g3d, SLOT(changeTheme(int)));*/
     QObject::connect(gradientBtoYPB, &QPushButton::pressed,
-                     this->sg, &SurfaceGraph::setBlackToYellowGradient);
+                     g3d, &Graph3D::setBlackToYellowGradient);
     QObject::connect(gradientGtoRPB, &QPushButton::pressed,
-                     this->sg, &SurfaceGraph::setGreenToRedGradient);
+                     g3d, &Graph3D::setGreenToRedGradient);
 
 
-    this->sg->setAxisMinSliderX(axisMinSliderX);
-    this->sg->setAxisMaxSliderX(axisMaxSliderX);
-    this->sg->setAxisMinSliderZ(axisMinSliderZ);
-    this->sg->setAxisMaxSliderZ(axisMaxSliderZ);
+    g3d->setAxisMinSliderX(axisMinSliderX);
+    g3d->setAxisMaxSliderX(axisMaxSliderX);
+    g3d->setAxisMinSliderZ(axisMinSliderZ);
+    g3d->setAxisMaxSliderZ(axisMaxSliderZ);
 
-    this->sg->initSliders ();
+    g3d->initSliders ();
 
-//    modeItemRB->setChecked(true);
     themeList->setCurrentIndex(1);
 }
 
