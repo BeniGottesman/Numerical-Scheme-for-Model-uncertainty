@@ -2,7 +2,7 @@
 //#include "ui_drawwindow.h"
 
 DrawWindow::DrawWindow(Graph3D *g3d,
-                       PayoffAlgorithm * abstractAlgo,
+                       //PayoffAlgorithm * abstractAlgo,
                        QWidget *parent) :
     QDialog(parent)
 {
@@ -129,7 +129,7 @@ DrawWindow::DrawWindow(Graph3D *g3d,
 
     widget->show();
 
-    g3d->computeGraph(new Strategy (abstractAlgo));
+    //g3d->computeGraph(new Strategy (abstractAlgo));
 
     QObject::connect(modeNoneRB, &QRadioButton::toggled,
                      g3d, &Graph3D::toggleModeNone);
@@ -147,8 +147,8 @@ DrawWindow::DrawWindow(Graph3D *g3d,
                      g3d, &Graph3D::adjustZMin);
     QObject::connect(axisMaxSliderZ, &QSlider::valueChanged,
                      g3d, &Graph3D::adjustZMax);
-    /*QObject::connect(themeList, SIGNAL(currentIndexChanged(int)),
-                     g3d, SLOT(changeTheme(int)));*/
+    QObject::connect(themeList, SIGNAL(currentIndexChanged(int)),
+                     g3d, SLOT(changeTheme(int)));
     QObject::connect(gradientBtoYPB, &QPushButton::pressed,
                      g3d, &Graph3D::setBlackToYellowGradient);
     QObject::connect(gradientGtoRPB, &QPushButton::pressed,

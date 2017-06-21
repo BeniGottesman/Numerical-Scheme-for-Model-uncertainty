@@ -43,7 +43,10 @@ HEADERS  += Windows/mainwindow.h \
     Graph/2D/graph2d.h \
     qcustomplot/qcustomplot.h \
     Windows/srwindow.h \
-    Algorithm/bissection.h
+    Algorithm/bissection.h \
+    Thread/qthreadex.h \
+    Graph/qthreadforgraph.h \
+    Windows/qthreadforwindow.h
 
 
 FORMS    += Windows/mainwindow.ui \

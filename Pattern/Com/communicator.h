@@ -97,7 +97,6 @@ public:
     }
 
     //addNewConnection
-
     //template < typename T1, typename T2 >
     static void Connect (ICommunicator <T1, T2> *com1, T1 *t1,
                          ICommunicator <T1, T2> *com2, T2 *t2)

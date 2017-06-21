@@ -92,14 +92,14 @@ void MainWindow::on_StoppingRegionButton_clicked()
     pLD.addParameter("N", &N);
 
     //Here we know the axes so we don't have to pass through communicator
-    SRW = new SRWindow (&pLD, abstractAlgo);
+    SRWindow * SRW = new SRWindow (&pLD, abstractAlgo);
     this->hide();
 }
 
-void MainWindow::on_DoRecursion_clicked()
+void MainWindow::on_surfaceComputation_clicked()
 {
     this->setEnabled(false);
-    //ui->DoRecursion->setEnabled(false);
+    ui->progressSimulationBar->setEnabled(true);
 
     /*Value from the GUI*/
     double S0_inf = ui->S0_inf->value();
@@ -185,8 +185,9 @@ void MainWindow::on_DoRecursion_clicked()
     }
 
     PayoffAlgorithm * abstractAlgo = new NSMUAlgorithm (*po);
-    ParamLD pLD;
+    Strategy * s = new Strategy (abstractAlgo);
 
+    ParamLD pLD;
     pLD.addParameter("S0", &S0_inf);
     pLD.addParameter("S0_inf", &S0_inf);
     pLD.addParameter("S0_sup", &S0_sup);
@@ -200,7 +201,7 @@ void MainWindow::on_DoRecursion_clicked()
     pLD.addParameter("Tdiv", &Tdiv);
     pLD.addParameter("N", &N);
 
-    parameterListDC<Q3DSurface> pLDC (pLD);
+    parameterListDC<Q3DSurface> * pLDC = new parameterListDC<Q3DSurface> (pLD);
 
     Graph3D * g3D = new Graph3D ("Initial stock Value",
                                  "Option Value",
@@ -208,21 +209,60 @@ void MainWindow::on_DoRecursion_clicked()
                                  "S0", "T",
                                  S0div, Tdiv,
                                  S0_inf,S0_sup,
-                                 T_inf,T_sup);
+                                 T_inf,T_sup,
+                                 s);
 
-    ICommunicator<ParamLD, Q3DSurface>::Connect(&pLDC, pLDC.getParameterList(),
-                                                g3D, g3D->getGraph());
 
-    g3D->start ();
-}
+    ICommunicator < ParamLD, Q3DSurface >::Connect(pLDC, pLDC->getParameterList(),
+                                                   g3D, g3D->getGraph());
 
-void MainWindow::DrawingNext (Graph3D * g3D)
-{
+    m_3DSimulationThread = new QThreadFor3DGraph (g3D);
+
+    QObject::connect((TGraphEvents *) m_3DSimulationThread, SIGNAL(computationFinished()),
+                     this, SLOT(showSurfaceWindow ()));
+
+    m_3DSimulationThread->start();
+
+    /*m_SimulationThread = new QThreadEx ();
+    g3D->moveToThread(m_SimulationThread);
+    qRegisterMetaType< Graph3D >("Graph3D");
+    QObject::connect(g3D, SIGNAL (simulationFinished(Graph3D *)),
+                     this, SLOT(surfaceComputed(Graph3D *)), Qt::DirectConnection);
+    QObject::connect(g3D, SIGNAL (simulationProgression(int)),
+                     ui->progressSimulationBar, SLOT(setValue(int)));
+    /*QObject::connect(m_SimulationThread, SIGNAL(finished()),
+                     g3D, SLOT(deleteLater()));*/
+    /*QObject::connect(this, SIGNAL(simulationRequested ()),
+                     g3D, SLOT(computeGraph()));
+    m_SimulationThread->start();
+
+    emit simulationRequested ();*/
+    /*g3D->computeGraph();*/
+    //g3D->start ();
+
+    /*ui->progressSimulationBar->setEnabled(false);
+
     this->setEnabled(true);
 
-    //DW = new DrawWindow (g3D, abstractAlgo);
+    DrawWindow * DW = new DrawWindow (g3D, this);
 
-    this->hide();
+    this->hide();*/
+}
+
+void MainWindow::showSurfaceWindow ()
+{
+    Graph3D * g3D = (Graph3D *) m_3DSimulationThread->getGraph();
+    m_3DSimulationThread->unloadGraph();
+
+    DrawWindow * DW = new DrawWindow (g3D, this);
+
+    //w = new QThreadForWindow (DW);//to delete in the destructor
+
+    w->start ();
+
+    this->setEnabled(true);
+    ui->progressSimulationBar->setEnabled(false);
+    //this->hide();
 }
 
 void MainWindow::on_OptionChoice_currentIndexChanged(const QString &PayoffMenu)

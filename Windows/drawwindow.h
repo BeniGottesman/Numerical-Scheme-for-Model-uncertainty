@@ -31,7 +31,7 @@ class DrawWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit DrawWindow(Graph3D *g3d, PayoffAlgorithm *abstractAlgo, QWidget *parent = 0);
+    explicit DrawWindow(Graph3D *g3d, QWidget *parent = 0);
 
     ~DrawWindow();
 

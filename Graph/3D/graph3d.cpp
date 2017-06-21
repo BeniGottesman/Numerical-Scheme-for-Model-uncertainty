@@ -1,6 +1,6 @@
 #include "graph3d.h"
 
-Graph3D::Graph3D (Graph3D & g)//revoir le constructeur copie
+Graph3D::Graph3D (const Graph3D & g)//revoir le constructeur copie
 {
     infX = g.getInfX();
     supX = g.getSupX();
@@ -27,18 +27,21 @@ Graph3D::Graph3D (Graph3D & g)//revoir le constructeur copie
     m_axisMaxSliderZ->setValue(zdiv);
 
     //Make a copy
-    surfaceProxy = new QSurfaceDataProxy ();
-    surfaceSeries = new QSurface3DSeries(surfaceProxy);
+    m_surfaceProxy = new QSurfaceDataProxy ();
+    surfaceSeries = new QSurface3DSeries(m_surfaceProxy);
 
     surfaceSeries->setDrawMode(QSurface3DSeries::DrawSurfaceAndWireframe);
     surfaceSeries->setFlatShadingEnabled(true);
+
+    m_s = g.m_s;
 }
 
 Graph3D::Graph3D(QString String_X, QString String_Y, QString String_Z,
                  QString label_X, QString label_Z,
                  double subdivision_X, double subdivision_Z,
                  double min_X, double max_X,
-                 double min_Z, double max_Z)
+                 double min_Z, double max_Z,
+                 Strategy *s)
 {
     m_graph = new Q3DSurface();
 
@@ -84,11 +87,13 @@ Graph3D::Graph3D(QString String_X, QString String_Y, QString String_Z,
     labelX = label_X;
     labelZ = label_Z;
 
-    surfaceProxy = new QSurfaceDataProxy ();
-    surfaceSeries = new QSurface3DSeries(surfaceProxy);
+    m_surfaceProxy = new QSurfaceDataProxy ();
+    surfaceSeries = new QSurface3DSeries(m_surfaceProxy);
 
     surfaceSeries->setDrawMode(QSurface3DSeries::DrawSurfaceAndWireframe);
     surfaceSeries->setFlatShadingEnabled(true);
+
+    m_s = s;
 }
 
 void Graph3D::initSliders()
@@ -126,12 +131,12 @@ void Graph3D::updateValue(QString key, unsigned int i)
 }
 
 //inline
-void Graph3D::updateParameter (QString key, double Value)
+/*void Graph3D::updateParameter (QString key, double Value)
 {
     c->getT1()->setParameterValue (key, Value);
-}
+}*/
 
-void Graph3D::computeGraph (Strategy *s)
+void Graph3D::computeGraph ()
 {
     QSurfaceDataArray *dataArray = new QSurfaceDataArray;
 
@@ -147,10 +152,12 @@ void Graph3D::computeGraph (Strategy *s)
     double z0_sup = supZ;
     double z0_subdiv = subdivisionZ;
 
+    int Progression = 0;
+
     dataArray->reserve(z0_subdiv /*+ 1.0f*/);//verify this line
     for (int i = 1; z0 <= z0_sup; i++)
     {
-        s->getStrategy()->getPayoff()->setMaturity(z0);
+        m_s->getStrategy()->getPayoff()->setMaturity(z0);
         QSurfaceDataRow *newRow = new QSurfaceDataRow(x0_subdiv + 1.0f);
         // Keep values within range bounds,
         // since just adding step can cause minor drift due
@@ -158,7 +165,7 @@ void Graph3D::computeGraph (Strategy *s)
         int index = 0;
         for(int j = 1; x0 <= x0_sup; j++)
         {
-            y0 = s->execute(*getCommunicator()->getT1());//V00
+            y0 = m_s->execute(*getCommunicator()->getT1());//V00
             (*newRow)[index++].setPosition(QVector3D(x0, y0, z0));
             //std::cout << "T = " << z0 << ", S0 = " << x0 << ", V00 = " << y0 <<"\n";
             updateValue("x", j);
@@ -168,20 +175,30 @@ void Graph3D::computeGraph (Strategy *s)
         }
         *dataArray << newRow;
 
+
         updateValue("x", 0);//we reset the x parameter
         x0 = getInfX ();
 
         updateValue("z", i);
         z0 = z0_inf + i*getStepZ();
+
+        Progression = i/subdivisionZ*100;
+        emit simulationProgression(Progression);
+
         if (getStepZ() == 0)//Z is reduced to a singleton
             break;
     }
 
-    surfaceProxy->resetArray(dataArray);
+    Progression = 100;
+    emit simulationProgression(Progression);
+
+    m_surfaceProxy->resetArray(dataArray);
 
     updateValue("z", 0);//we reset the z parameter
 
     m_graph->addSeries (surfaceSeries);
+
+    emit simulationFinished ();
 }
 
 void Graph3D::setAxisXRange(float min, float max)
@@ -290,6 +307,6 @@ void Graph3D::changeTheme(int theme)
 
 Graph3D::~Graph3D ()
 {
-    delete surfaceProxy;
+    delete m_surfaceProxy;
     delete surfaceSeries;
 }

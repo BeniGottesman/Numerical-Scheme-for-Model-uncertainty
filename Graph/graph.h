@@ -12,20 +12,25 @@
 //PL = parameterList, GraphType = 2d, 3d etc
 using namespace QtDataVisualization;
 
-class GraphSignalsSlots : public QObject
+class GraphEvents : public QObject
 {
-    Q_OBJECT
 public:
-    explicit GraphSignalsSlots(QObject *parent = 0) :
-        QObject(parent) {}
+    /* explicit GraphEvents(QObject *parent = 0):
+        QObject(parent) {}*/
+    GraphEvents(){}
 
+public Q_SLOTS:
+    virtual void computeGraph () = 0;
+
+signals:
+    virtual void simulationProgression (int) = 0;
+    virtual void simulationFinished () = 0;
 };
 
 template < typename PL, typename GraphType >
 class Graph :
-        public GraphSignalsSlots,
-        public ICommunicator < PL, GraphType >,
-        public QThread
+        public GraphEvents,
+        public ICommunicator < PL, GraphType >
 {
 public:
     Graph (){}
@@ -35,13 +40,10 @@ public:
     void setStrategy (Strategy * s)
     {m_s = s;}
 
-    virtual void computeGraph (Strategy *s) = 0;
+    virtual void updateValue(QString key, unsigned int i) = 0;
 
-    void run ()
-    { computeGraph (m_s); }
-
-signals:
-    void simulationFinished ();
+    virtual void updateParameter (QString key, double Value)
+    {c->getT1()->setParameterValue (key, Value);}
 
 protected:
     GraphType * m_graph;

@@ -14,6 +14,9 @@
 #include "drawwindow.h"
 #include "srwindow.h"
 
+#include "Graph/qthreadforgraph.h"
+#include "Windows/qthreadforwindow.h"
+
 #include "Graph/3D/graph3d.h"
 #include "Pattern/Com/communicator.h"
 
@@ -35,14 +38,21 @@ public:
 
 private slots:
     void on_StoppingRegionButton_clicked();
-    void on_DoRecursion_clicked();
-    void DrawingNext (Graph3D * g3D);
+    void on_surfaceComputation_clicked();
+
     //void on_actionAbout_clicked ();
     void on_OptionChoice_currentIndexChanged(const QString &PayoffMenu);
+
+    void showSurfaceWindow ();
+
+signals:
+    void simulationRequested ();
+
 private:
-    Ui::MainWindow *ui;
-    DrawWindow * DW;
-    SRWindow * SRW;
+    Ui::MainWindow * ui;
+
+    QThreadFor3DGraph * m_3DSimulationThread;
+    QThreadForWindow < DrawWindow > * w;
 };
 
 #endif // MAINWINDOW_H
