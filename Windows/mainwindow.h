@@ -15,7 +15,7 @@
 #include "srwindow.h"
 
 #include "Graph/qthreadforgraph.h"
-#include "Windows/qthreadforwindow.h"
+//#include "Windows/qthreadforwindow.h"
 
 #include "Graph/3D/graph3d.h"
 #include "Pattern/Com/communicator.h"
@@ -52,7 +52,7 @@ private:
     Ui::MainWindow * ui;
 
     QThreadFor3DGraph * m_3DSimulationThread;
-    QThreadForWindow < DrawWindow > * w;
+    //QThreadForWindow < DrawWindow > * w;
 };
 
 #endif // MAINWINDOW_H

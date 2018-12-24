@@ -11,6 +11,10 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    /*if (m_3DSimulationThread != NULL)
+        delete m_3DSimulationThread;*/
+    /*if (w != NULL)
+        delete w;*/
 }
 
 void MainWindow::on_StoppingRegionButton_clicked()
@@ -187,21 +191,21 @@ void MainWindow::on_surfaceComputation_clicked()
     PayoffAlgorithm * abstractAlgo = new NSMUAlgorithm (*po);
     Strategy * s = new Strategy (abstractAlgo);
 
-    ParamLD pLD;
-    pLD.addParameter("S0", &S0_inf);
-    pLD.addParameter("S0_inf", &S0_inf);
-    pLD.addParameter("S0_sup", &S0_sup);
-    pLD.addParameter("S0div", &S0div);
-    pLD.addParameter("Rate", &Rate);
-    pLD.addParameter("Sigma_inf", &Sigma_inf);
-    pLD.addParameter("Sigma_sup", &Sigma_sup);
-    pLD.addParameter("T", &T_inf);
-    pLD.addParameter("T_inf", &T_inf);
-    pLD.addParameter("T_sup", &T_sup);
-    pLD.addParameter("Tdiv", &Tdiv);
-    pLD.addParameter("N", &N);
+    ParamLD * pLD = new ParamLD ();
+    pLD->addParameter("S0", &S0_inf);
+    pLD->addParameter("S0_inf", &S0_inf);
+    pLD->addParameter("S0_sup", &S0_sup);
+    pLD->addParameter("S0div", &S0div);
+    pLD->addParameter("Rate", &Rate);
+    pLD->addParameter("Sigma_inf", &Sigma_inf);
+    pLD->addParameter("Sigma_sup", &Sigma_sup);
+    pLD->addParameter("T", &T_inf);
+    pLD->addParameter("T_inf", &T_inf);
+    pLD->addParameter("T_sup", &T_sup);
+    pLD->addParameter("Tdiv", &Tdiv);
+    pLD->addParameter("N", &N);
 
-    parameterListDC<Q3DSurface> * pLDC = new parameterListDC<Q3DSurface> (pLD);
+    parameterListDC<Q3DSurface> * pLDC = new parameterListDC<Q3DSurface> (*pLD);
 
     Graph3D * g3D = new Graph3D ("Initial stock Value",
                                  "Option Value",
@@ -218,35 +222,14 @@ void MainWindow::on_surfaceComputation_clicked()
 
     m_3DSimulationThread = new QThreadFor3DGraph (g3D);
 
-    QObject::connect((TGraphEvents *) m_3DSimulationThread, SIGNAL(computationFinished()),
+    QObject::connect((TGraphEvents *) m_3DSimulationThread, SIGNAL (simulationProgression(int)),
+                     ui->progressSimulationBar, SLOT (setValue(int)));
+    QObject::connect((TGraphEvents *) m_3DSimulationThread, SIGNAL(simulationFinished()),
                      this, SLOT(showSurfaceWindow ()));
+    QObject::connect((TGraphEvents *) m_3DSimulationThread, SIGNAL(finished()),
+                     (TGraphEvents *) m_3DSimulationThread, SLOT(deleteLater()));
 
     m_3DSimulationThread->start();
-
-    /*m_SimulationThread = new QThreadEx ();
-    g3D->moveToThread(m_SimulationThread);
-    qRegisterMetaType< Graph3D >("Graph3D");
-    QObject::connect(g3D, SIGNAL (simulationFinished(Graph3D *)),
-                     this, SLOT(surfaceComputed(Graph3D *)), Qt::DirectConnection);
-    QObject::connect(g3D, SIGNAL (simulationProgression(int)),
-                     ui->progressSimulationBar, SLOT(setValue(int)));
-    /*QObject::connect(m_SimulationThread, SIGNAL(finished()),
-                     g3D, SLOT(deleteLater()));*/
-    /*QObject::connect(this, SIGNAL(simulationRequested ()),
-                     g3D, SLOT(computeGraph()));
-    m_SimulationThread->start();
-
-    emit simulationRequested ();*/
-    /*g3D->computeGraph();*/
-    //g3D->start ();
-
-    /*ui->progressSimulationBar->setEnabled(false);
-
-    this->setEnabled(true);
-
-    DrawWindow * DW = new DrawWindow (g3D, this);
-
-    this->hide();*/
 }
 
 void MainWindow::showSurfaceWindow ()
@@ -256,13 +239,11 @@ void MainWindow::showSurfaceWindow ()
 
     DrawWindow * DW = new DrawWindow (g3D, this);
 
-    //w = new QThreadForWindow (DW);//to delete in the destructor
-
-    w->start ();
+    //DW->show();
 
     this->setEnabled(true);
+    ui->progressSimulationBar->setValue(0);
     ui->progressSimulationBar->setEnabled(false);
-    //this->hide();
 }
 
 void MainWindow::on_OptionChoice_currentIndexChanged(const QString &PayoffMenu)

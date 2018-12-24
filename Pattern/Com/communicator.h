@@ -14,7 +14,7 @@ public:
     Communicator (T1 *t1, T2 *t2)
     {this->t1 = t1, this->t2 = t2;}//We connect T1 and T2
 
-    ~Communicator () {}
+    ~Communicator () {/*No new used*/}
 
     void setT1 (T1 *newt1) {
         t1 = newt1;
@@ -24,8 +24,8 @@ public:
     T1 *getT1() {return t1;}
     T2 *getT2() {return t2;}
 
-    void removeT1 (){delete t1;}
-    void removeT2 (){delete t2;}
+    void removeT1 (){t1 = NULL;/*delete t1;*/}
+    void removeT2 (){t2 = NULL;/*delete t2;*/}
 
     //virtual void const NotifyT1 (QString key, double Value) = 0; //we can take another type instead of double + cascade modification
     //void const NotifyT2 (double Value) = 0;
@@ -45,7 +45,7 @@ class CommunicatorChild : public Communicator < T1, T2 >
 {
 public:
     CommunicatorChild () {}
-    ~CommunicatorChild () {} //It is T1 and T2 which delete t1 and t2 and not this class
+    ~CommunicatorChild () {/*No new used*/} //It is T1 and T2 which delete t1 and t2 and not this class
 
     void const addToT1 (QString key, double Value)
     {

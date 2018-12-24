@@ -14,7 +14,7 @@ class TGraphEvents: public QThread
     Q_OBJECT
 
 signals:
-    void computationFinished ();
+    void simulationFinished ();
     void simulationProgression(int);
 };
 
@@ -29,7 +29,11 @@ public:
     {
         this->g = g;
         graphLoaded = true;
-        QObject::connect(g, SIGNAL (simulationProgression(int)),
+        QObject::connect(this, SIGNAL (started()),
+                         this->g, SLOT (computeGraph ()));
+        QObject::connect(this->g, SIGNAL (simulationFinished()),
+                         this, SIGNAL (simulationFinished()));
+        QObject::connect(this->g, SIGNAL (simulationProgression(int)),
                          this, SIGNAL (simulationProgression(int)));
     }
 
@@ -37,12 +41,13 @@ public:
 
     void run ()
     {
-        g->computeGraph();
-        emit computationFinished();
+        exec ();
+        //g->computeGraph();
+        //emit simulationFinished();
     }
 
     void loadGraph (Graph <ParamLD, GraphType> * g) {this->g = g;}
-    void unloadGraph () {if (graphLoaded) g = NULL;}
+    void unloadGraph () {if (graphLoaded) g = NULL, graphLoaded=false;}
 
     virtual Graph < ParamLD, GraphType > * getGraph () = 0;
 
