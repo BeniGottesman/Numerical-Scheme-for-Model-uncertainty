@@ -11,4 +11,3 @@ If the type option is not implemented, then the user can write in a c++ fashion 
 ![picture]("pictures/220617 - Call Game Option - N=100 sigma in 0 07.png")
 ![picture](pictures/220617 - Call Game Option - Speed of convergence - sigma in 0 07.bmp)
 ![picture](pictures/Game put option - Surface.bmp)
-![picture](pictures/270617 - Call Game Option - Stopping region - N 100 Sdiv 1000 T 100 (Zoom).bmp)
