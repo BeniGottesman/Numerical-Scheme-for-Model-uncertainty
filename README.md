@@ -7,6 +7,6 @@ We introduce an efficient numerical scheme for continuous time Dynkin games unde
 This is a GUI that let the user to price options under volatility uncertainty.
 If the type option is not implemented, then the user can write in a c++ fashion the payoff and the type of option (Russian, parisian, asiat. etc)
 
-![picture](pictures/220617_-_Call_Game_Option_-_N_=_100_sigma_in_0_07.png)
-![picture](pictures/220617_-_Call_Game_Option_-_Speed_of_convergence_-_sigma_in_0_07.bmp)
+Download here : https://drive.google.com/drive/folders/1s-W_Q1nixBkgU0wbY9oxJqVMN67huMfi?usp=sharing
+
 ![picture](pictures/Game_put_option_-_Surface.bmp)
