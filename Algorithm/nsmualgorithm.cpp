@@ -54,20 +54,12 @@ double NSMUAlgorithm::execute(ParamLD &param)
 
             double tmp_max_p = (1.0f-p)*V[j+1][N+K] + p/(1.0f+tmp_exp)*V[j+1][N+K+1] + p*tmp_exp/(1.0f+tmp_exp)*V[j+1][N+K-1];
             double tmp_max_1 = 1.0f/(1.0f+tmp_exp)*V[j+1][N+K+1] + tmp_exp/(1.0f+tmp_exp)*V[j+1][N+K-1];
-            /**TEST**/
-            /*if (tmp_max_p > tmp_max_1)
-            {
-                std::cout << tmp_max_p - tmp_max_1 << "\n" << endl;
-            }*/
-            /**TEST**/
+
             tmp_pmax = std::max (tmp_max_p, tmp_max_1);
-            /*tmp_pmax = std::max (
-                        (1.0f-p)*V[j+1][N+K] + p/(1.0f+tmp_exp)*V[j+1][N+K+1] + p*tmp_exp/(1.0f+tmp_exp)*V[j+1][N+K-1],
-                    1.0f/(1.0f+tmp_exp)*V[j+1][N+K+1] + tmp_exp/(1.0f+tmp_exp)*V[j+1][N+K-1]);*/
-            //std::cout << "tmp_max_sol := V["<<j<<"]["<<K<<"] = "<< tmp_pmax <<"\n";
 
             V[j][N+K] = std::max (tmp_f, std::min (tmp_g, tmp_pmax));
 
+            //Output debug
             //std::cout << " V["<<j<<"]["<<K<<"] = "<< V[j][N+K]<<"\n";
         }
     }
