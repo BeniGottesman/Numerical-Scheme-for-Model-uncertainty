@@ -9,4 +9,6 @@ If the type option is not implemented, then the user can write in a c++ fashion 
 
 Download here : https://drive.google.com/drive/folders/1s-W_Q1nixBkgU0wbY9oxJqVMN67huMfi?usp=sharing
 
+Beni[d0t]gottesman[a.t.]gmail[d0t]com
+
 ![picture](pictures/Game_put_option_-_Surface.bmp)
