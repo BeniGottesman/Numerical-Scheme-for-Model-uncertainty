@@ -1,16 +1,6 @@
 /*
  ******************************************************************
  *           C++ Mathematical Expression Toolkit Library          *
- *                                                                *
- * Author: Arash Partow (1999-2017)                               *
- * URL: http://www.partow.net/programming/exprtk/index.html       *
- *                                                                *
- * Copyright notice:                                              *
- * Free use of the C++ Mathematical Expression Toolkit Library is *
- * permitted under the guidelines and in accordance with the most *
- * current version of the MIT License.                            *
- * http://www.opensource.org/licenses/MIT                         *
- *                                                                *
  * Example expressions:                                           *
  * (00) (y + x / y) * (x - y / x)                                 *
  * (01) (x^2 / sin(2 * pi / y)) - x / 2                           *
